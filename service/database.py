@@ -41,13 +41,23 @@ class Database:
         return result
 
     def create_user(self, ksuid: str, email: str, pswrd: str, created_at: datetime):
-        self._execute_(f"INSERT INTO Users (ksuid, email, pswrd, created_at) VALUES (\"{ksuid}\", \"{email}\", \"{pswrd}\", \"{created_at}\")")
+        user_exist = self._execute_one_(f"SELECT * FROM Users WHERE ksuid={ksuid}")
+        if not user_exist:
+            self._execute_(f"INSERT INTO Users (ksuid, email, pswrd, created_at) VALUES (\"{ksuid}\", \"{email}\", \"{pswrd}\", \"{created_at}\")")
+            return "User created"
+        return "This user already exists"
+            
 
     def delete_user(self, ksuid):
         self._execute_(f"DELETE FROM Users WHERE ksuid={ksuid}")
 
-    def create_task(self , id, description, priority):
-        self._execute_(f"INSERT INTO Tasks (id, description, priority_1to5) VALUES (\"{id}\", \"{description}\", \"{priority}\")")
+    def create_task(self, id, description, priority):
+        task_exist = self._execute_one_(f"SELECT * FROM Tasks WHERE id={id}")
+        print(task_exist)
+        if not task_exist:
+            self._execute_(f"INSERT INTO Tasks (id, description, priority_1to5) VALUES (\"{id}\", \"{description}\", \"{priority}\")")
+            return "Task created"
+        return "Task already created"
 
     def delete_task(self, id: int):
         self._execute_(f"DELETE FROM Tasks WHERE id={id}")

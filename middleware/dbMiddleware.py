@@ -11,7 +11,7 @@ class DbMiddleware:
         self.db.delete_user(ksuid)
 
     def create_task(self, id: int, description: str, priority: int):
-        self.db.create_task(id, description, priority)
+        return self.db.create_task(id, description, priority)
 
     def delete_task(self, id: int):
         self.db.delete_task(id)
