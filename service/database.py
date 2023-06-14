@@ -1,3 +1,4 @@
+from datetime import datetime
 from pymysqlpool import ConnectionPool
  
 class Database:
@@ -14,8 +15,8 @@ class Database:
             # buffered=True
         )
 
-    # def __del__(self):
-    #     self.pool._remove_connections()
+    def __del__(self):
+        self.pool._remove_connections()
 
     # just execute query
     def _execute_(self, query):
@@ -39,14 +40,14 @@ class Database:
         connection.close()
         return result
 
-    def create_user(self, ksuid, email, pswrd, created_at):
-        self.database._execute_(f"INSERT INTO Users (ksuid, email, pswrd, created_at) VALUES ({ksuid}, {email}, {pswrd}, {created_at})")
+    def create_user(self, ksuid: str, email: str, pswrd: str, created_at: datetime):
+        self._execute_(f"INSERT INTO Users (ksuid, email, pswrd, created_at) VALUES (\"{ksuid}\", \"{email}\", \"{pswrd}\", \"{created_at}\")")
 
     def delete_user(self, ksuid):
-        self.database._execute_(f"DELETE FROM Users WHERE ksuid={ksuid}")
+        self._execute_(f"DELETE FROM Users WHERE ksuid={ksuid}")
 
-    def create_task(self):
-        self.database._execute_(f"INSERT INTO Tasks (ksuid, email, pswrd, created_at) VALUES ({ksuid}, {email}, {pswrd}, {created_at})")
+    def create_task(self , id, description, priority):
+        self._execute_(f"INSERT INTO Tasks (id, description, priority_1to5) VALUES (\"{id}\", \"{description}\", \"{priority}\")")
 
-    def delete_task(self):
-        self.database._execute_
+    def delete_task(self, id: int):
+        self._execute_(f"DELETE FROM Tasks WHERE id={id}")
