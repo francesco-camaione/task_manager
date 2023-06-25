@@ -15,9 +15,6 @@ class Database:
             # buffered=True
         )
 
-    def __del__(self):
-        self.pool._remove_connections()
-
     # just execute query
     def _execute_(self, query):
         connection = self.pool.get_connection()
@@ -39,9 +36,14 @@ class Database:
             result = cursor.fetchall()
         connection.close()
         return result
+    
+    def check_auth(self, ksuid: int):
+        res = self._execute_one_(f"SELECT * FROM Users WHERE ksuid={ksuid} LIMIT 1")
+        return res is not None 
+
 
     def create_user(self, ksuid: str, email: str, pswrd: str, created_at: datetime):
-        user_exist = self._execute_one_(f"SELECT * FROM Users WHERE ksuid={ksuid}")
+        user_exist = self._execute_one_(f"SELECT * FROM Users WHERE ksuid =\"{ksuid}\" ")
         if not user_exist:
             self._execute_(f"INSERT INTO Users (ksuid, email, pswrd, created_at) VALUES (\"{ksuid}\", \"{email}\", \"{pswrd}\", \"{created_at}\")")
             return "User created"
@@ -53,7 +55,6 @@ class Database:
 
     def create_task(self, id, description, priority):
         task_exist = self._execute_one_(f"SELECT * FROM Tasks WHERE id={id}")
-        print(task_exist)
         if not task_exist:
             self._execute_(f"INSERT INTO Tasks (id, description, priority_1to5) VALUES (\"{id}\", \"{description}\", \"{priority}\")")
             return "Task created"

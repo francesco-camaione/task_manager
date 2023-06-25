@@ -4,7 +4,10 @@ class DbMiddleware:
     def __init__(self):
         self.db = Database() 
 
-    def create_user(self, ksuid: int, email: str, pswrd: str, created_at):
+    def is_auth(self, ksuid: int):
+        return self.db.check_auth(ksuid)
+
+    def create_user(self, ksuid, email: str, pswrd: str, created_at):
         return self.db.create_user(ksuid, email, pswrd, created_at)
 
     def delete_user(self, ksuid: int):
